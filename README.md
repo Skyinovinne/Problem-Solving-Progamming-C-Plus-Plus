@@ -1,2 +1,2 @@
 ## Problem Solving Programming (C++ Intro)
-###### Programming assignments from Problem Solving & Programming for C++
+###### Programs from Problem Solving & Programming - Introduction to C++ Course

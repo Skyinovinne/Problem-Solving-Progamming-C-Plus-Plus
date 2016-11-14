@@ -29,24 +29,38 @@ void Register::addProduct(Product *product)
 }
 
 ---------------------------------------------------------------------------------------------------
+
+
 void Register::printReceipt(ostream & out)
 {
-  // This is where you put the stars and title and output stuff
+  	out << "****************************************" << endl;
+	out << "*            UMKC BOOKSTORE            *" << endl;
+	out << "****************************************" << endl;	
+	out << endl;
+	out << setw(4) << left << "Qty" << setw(28) << left << "Description" << setw(8) << "Total" << endl;
+	out << "--- --------------------------- --------" << endl;
 
 	double total = 0;
 
 	for (int i = 0; i != numProducts; i++)
 	{
-		Product* product = products[i];
-		product->print(out);
-		total += product->calculateTotal();
+		Product* it = products[i];
+		it->print(out);
+		total += it->calculateTotal();
 	}
-  
-  // This is where you output totals
+
+	out << endl;
+	out << "Grand total: $" << total << endl;
+	out << "Items sold:  " << numProducts << endl;
+	out << endl;
+	out << "* Thank you for shopping at our store! *" << endl;
 }
 
 ---------------------------------------------------------------------------------------------------
+// Main
 
+// Delete this if you use getline in the main
+// Same as getline(in, theNameOfVariableYouUse);
 string readline(istream& in)
 {
 	string result;
@@ -54,6 +68,8 @@ string readline(istream& in)
 	return result;
 }
 
+// Delete this if you use getline in the main
+// Same as getline(in, theNameOfVariableYouUse);
 int readint(istream& in)
 {
 	int result;
@@ -61,6 +77,8 @@ int readint(istream& in)
 	return result;
 }
 
+// Delete this is you use getline in the main
+// Same as getline(in, theNameOfVariableYouUse);
 double readdouble(istream& in)
 {
 	double result;
@@ -70,7 +88,7 @@ double readdouble(istream& in)
 
 int main()
 {
-	ifstream in("product.txt");
+	ifstream in("products.txt");
 	ofstream out("receipt.txt");
 
 	Register reg;
@@ -82,6 +100,7 @@ int main()
 		Product* product;
 		if(productType == "SHIRT")
 		{
+		// Instead of this you can use getline
 			Shirt* shirt = new Shirt();
 			shirt->setDescription(readline(in));
 			shirt->setSize(readline(in));
@@ -89,6 +108,7 @@ int main()
 		}
 		else if(productType == "SUPPLIES")
 		{
+		// Instead of this you can use getline
 			OfficeSupplies* supplies = new OfficeSupplies();
 			supplies->setDescription(readline(in));
 			supplies->setCount(readint(in));
@@ -99,6 +119,7 @@ int main()
 			continue;
 		}
 		
+		//Ignore this if you use getline above to read your quantity and price
 		product->setQuantity(readint(in));
 		product->setPrice(readdouble(in));
 		reg.addProduct(product);
@@ -107,6 +128,7 @@ int main()
 
 	reg.printReceipt(out);
 
+	// this delete the pointers so no memory leaks
 	for(vector<void*>::const_iterator it = pointersToDelete.begin(); it != pointersToDelete.end(); ++it)
 	{
 		delete *it;

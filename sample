@@ -1,0 +1,118 @@
+class Register
+{
+public:
+	Register();
+	void addProduct(Product* product);
+	void printReceipt(ostream& out);
+private:
+	Product** products = new Product*[1];
+	int capacity = 1;
+	int numProducts = 0;
+};
+
+void Register::addProduct(Product *product)
+{
+	if (numProducts == capacity)
+	{
+		Product** old = products;
+		capacity *= 2;
+		products = new Product*[capacity];
+		for(int i = 0; i != numProducts; i++)
+		{
+			products[i] = old[i];
+		}
+		delete[] old;
+	}
+	
+	products[numProducts++] = product;
+
+}
+
+---------------------------------------------------------------------------------------------------
+void Register::printReceipt(ostream & out)
+{
+  // This is where you put the stars and title and output stuff
+
+	double total = 0;
+
+	for (int i = 0; i != numProducts; i++)
+	{
+		Product* product = products[i];
+		product->print(out);
+		total += product->calculateTotal();
+	}
+  
+  // This is where you output totals
+}
+
+---------------------------------------------------------------------------------------------------
+
+string readline(istream& in)
+{
+	string result;
+	getline(in, result);
+	return result;
+}
+
+int readint(istream& in)
+{
+	int result;
+	in >> result;
+	return result;
+}
+
+double readdouble(istream& in)
+{
+	double result;
+	in >> result;
+	return result;
+}
+
+int main()
+{
+	ifstream in("product.txt");
+	ofstream out("receipt.txt");
+
+	Register reg;
+	vector<void*> pointersToDelete;
+	while(!in.eof())
+	{
+		string productType = readline(in);
+
+		Product* product;
+		if(productType == "SHIRT")
+		{
+			Shirt* shirt = new Shirt();
+			shirt->setDescription(readline(in));
+			shirt->setSize(readline(in));
+			product = shirt;
+		}
+		else if(productType == "SUPPLIES")
+		{
+			OfficeSupplies* supplies = new OfficeSupplies();
+			supplies->setDescription(readline(in));
+			supplies->setCount(readint(in));
+			product = supplies;
+		}
+		else
+		{
+			continue;
+		}
+		
+		product->setQuantity(readint(in));
+		product->setPrice(readdouble(in));
+		reg.addProduct(product);
+		pointersToDelete.push_back(product);
+	}
+
+	reg.printReceipt(out);
+
+	for(vector<void*>::const_iterator it = pointersToDelete.begin(); it != pointersToDelete.end(); ++it)
+	{
+		delete *it;
+	}
+
+	in.close();
+	out.close();
+	return 0;
+}
